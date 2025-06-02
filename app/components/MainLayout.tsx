@@ -27,7 +27,7 @@ export default function MainLayout({
             try {
                 // Get API URL from environment variable or use default
                 const apiUrl =
-                    process.env.NEXT_PUBLIC_API_URL ||
+                    process.env.BACKEND_URL ||
                     "http://localhost:3000/api";
 
                 // Try to connect to the API with a short timeout

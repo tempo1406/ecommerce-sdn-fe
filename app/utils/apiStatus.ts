@@ -6,7 +6,7 @@ import axios from 'axios';
  */
 export async function checkApiAvailability(): Promise<{available: boolean, message: string}> {
   // Get API URL from environment variable or use default
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  const apiUrl = process.env.BACKEND_URL || 'http://localhost:3000/api';
   
   console.log('Checking API availability at:', apiUrl);
   
@@ -42,7 +42,7 @@ export async function checkApiAvailability(): Promise<{available: boolean, messa
           // If this works, suggest updating the API URL
           return {
             available: true,
-            message: `API available at ${baseUrl} (without /api suffix). Consider updating your NEXT_PUBLIC_API_URL`
+            message: `API available at ${baseUrl} (without /api suffix). Consider updating your BACKEND_URL`
           };
         } catch (secondError) {
           console.log('Second attempt also failed:', secondError);
@@ -61,7 +61,7 @@ export async function checkApiAvailability(): Promise<{available: boolean, messa
         
         return {
           available: true,
-          message: `API available at ${altPort}. Consider updating your NEXT_PUBLIC_API_URL`
+          message: `API available at ${altPort}. Consider updating your BACKEND_URL`
         };
       } catch (thirdError) {
         console.log('Third attempt also failed:', thirdError);
