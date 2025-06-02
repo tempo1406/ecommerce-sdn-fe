@@ -168,7 +168,7 @@ export default function Banner({ autoplay = true, interval = 5000 }: BannerProps
             >
               <FaTimes className="mr-3 text-gray-500" />
               <div>
-                <div className="font-medium">Don't show again</div>
+                <div className="font-medium">Do not show again</div>
                 <div className="text-xs text-gray-500">Permanently hide this banner</div>
               </div>
             </button>

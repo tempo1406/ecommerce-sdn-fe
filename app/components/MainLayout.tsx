@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaShoppingBag, FaPlus, FaHome, FaCog } from "react-icons/fa";
+import { FaShoppingBag, FaPlus, FaHome } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
