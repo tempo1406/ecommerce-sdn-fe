@@ -54,7 +54,7 @@ export function useFileUpload({
     const formData = new FormData();
     formData.append('image', file);
 
-    const API_URL = process.env.BACKEND_URL || 'http://localhost:3000/api';
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
     
     const response = await fetch(`${API_URL}/upload/image`, {
       method: 'POST',

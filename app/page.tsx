@@ -103,7 +103,7 @@ export default function Home() {
           <div className="mt-3 p-3 bg-red-100 rounded-sm text-sm">
             <p className="font-medium">Troubleshooting Tips:</p>
             <ul className="list-disc list-inside mt-1">
-              <li>Ensure the backend server is running at {process.env.BACKEND_URL || 'http://localhost:3001/api'}</li>
+              <li>Ensure the backend server is running at {process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/api'}</li>
               <li>Check network connection and CORS settings</li>
               <li>Try refreshing the page</li>
             </ul>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Define the base URL for our API with a fallback
-const API_URL = process.env.BACKEND_URL || 'http://localhost:3000/api';
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000/api';
 
 console.log('API URL:', API_URL); // Debug the API URL
 
