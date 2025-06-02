@@ -39,12 +39,10 @@ export default function ImageUpload({
     allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
     uploadToCloudinary,
     onUpload: (file: File, imageUrl: string) => {
-      console.log('🔥 onUpload callback called with:', imageUrl?.substring(0, 50));
       onChange(imageUrl);
     }
   });
 
-  // Provide upload function to parent component
   const provideUploadFunction = useCallback(() => {
     if (onGetUploadFunction) {
       onGetUploadFunction(uploadSelectedFile);
@@ -55,28 +53,13 @@ export default function ImageUpload({
     provideUploadFunction();
   }, [provideUploadFunction]);
 
-  // Determine what image to show
   const imageToShow = preview || value;
   const hasSelectedFile = !!selectedFile;
   const isCloudinaryUrl = imageToShow?.includes('cloudinary.com');
 
-  // Debug logging
-  useEffect(() => {
-    console.log('🔍 NEW ImageUpload DEBUG:', {
-      preview: preview ? `${preview.substring(0, 30)}...` : 'null',
-      value: value ? `${value.substring(0, 30)}...` : 'null',
-      imageToShow: imageToShow ? `${imageToShow.substring(0, 30)}...` : 'null',
-      fileName,
-      hasSelectedFile,
-      isCloudinaryUrl,
-      isBase64: imageToShow?.startsWith('data:')
-    });
-  }, [preview, value, imageToShow, fileName, hasSelectedFile, isCloudinaryUrl]);
-
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log('📁 File selected:', file.name, file.type, file.size);
       handleFileSelect(file);
     }
   };
@@ -96,12 +79,9 @@ export default function ImageUpload({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    
     if (disabled) return;
-
     const files = e.dataTransfer.files;
     const file = files[0];
-    
     if (file) {
       handleFileSelect(file);
     }
@@ -121,16 +101,12 @@ export default function ImageUpload({
     }
   };
 
-  // Determine what to render
   const shouldShowImage = imageToShow && imageToShow.length > 0;
   const shouldShowPlaceholder = hasSelectedFile && !shouldShowImage;
   const shouldShowEmpty = !shouldShowImage && !shouldShowPlaceholder;
 
-  console.log('🎨 Render decision:', { shouldShowImage, shouldShowPlaceholder, shouldShowEmpty });
-
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Upload Area */}
       <div
         className={`
           relative border-2 border-dashed rounded-lg p-6 transition-colors
@@ -182,14 +158,6 @@ export default function ImageUpload({
                   src={imageToShow}
                   alt="Preview"
                   className="w-full h-full object-contain"
-                  onError={(e) => {
-                    console.error('❌ IMG ERROR:', e);
-                    console.error('❌ SRC:', imageToShow?.substring(0, 100));
-                  }}
-                  onLoad={(e) => {
-                    console.log('✅ IMG LOADED!');
-                    console.log('✅ Dimensions:', (e.target as HTMLImageElement).naturalWidth, 'x', (e.target as HTMLImageElement).naturalHeight);
-                  }}
                 />
               ) : (
                 <Image
@@ -198,8 +166,6 @@ export default function ImageUpload({
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain"
-                  onError={(e) => console.error('❌ Next Image error:', e)}
-                  onLoad={() => console.log('✅ Next Image loaded!')}
                 />
               )}
             </div>

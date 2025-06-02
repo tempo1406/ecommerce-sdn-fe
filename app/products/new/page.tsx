@@ -6,12 +6,9 @@ import ProductForm from '@/app/components/ProductForm';
 export default function CreateProduct() {
   const handleSubmit = async (data: Product) => {
     try {
-      console.log('Creating new product with data:', data);
       const createdProduct = await ProductService.create(data);
-      console.log('Product created successfully:', createdProduct);
       // No return needed, just resolve the promise
     } catch (error) {
-      console.error('Error in create product handler:', error);
       throw error; // Rethrow to let the form component handle the error
     }
   };

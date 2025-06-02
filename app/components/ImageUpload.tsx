@@ -11,7 +11,7 @@ interface ImageUploadProps {
   disabled?: boolean;
   className?: string;
   uploadToCloudinary?: boolean;
-  onGetUploadFunction?: (uploadFn: () => Promise<string | null>) => void; // New prop
+  onGetUploadFunction?: (uploadFn: () => Promise<string | null>) => void;
 }
 
 export default function ImageUpload({ 
@@ -39,10 +39,10 @@ export default function ImageUpload({
     allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
     uploadToCloudinary,
     onUpload: (file: File, imageUrl: string) => {
-      onChange(imageUrl); // This will be the preview initially
+      onChange(imageUrl);
     }
   });
-  // Provide upload function to parent component using useCallback to prevent re-renders
+
   const provideUploadFunction = useCallback(() => {
     if (onGetUploadFunction) {
       onGetUploadFunction(uploadSelectedFile);
@@ -51,36 +51,16 @@ export default function ImageUpload({
 
   useEffect(() => {
     provideUploadFunction();
-  }, [provideUploadFunction]);  // Use preview from file upload or existing value
+  }, [provideUploadFunction]);
+
   const imageToShow = preview || value;
   const hasSelectedFile = !!selectedFile;
-  const isCloudinaryUrl = imageToShow?.includes('cloudinary.com');  // Debug logging - more comprehensive
-  useEffect(() => {
-    console.log('🔍 ImageUpload DEBUG STATE:', {
-      preview: preview ? `${preview.substring(0, 50)}...` : 'null',
-      previewLength: preview?.length || 0,
-      previewType: preview ? preview.split(';')[0] : 'none',
-      value: value ? `${value.substring(0, 50)}...` : 'null',
-      valueLength: value?.length || 0,
-      valueType: value ? value.split(';')[0] : 'none',
-      imageToShow: imageToShow ? `${imageToShow.substring(0, 50)}...` : 'null',
-      imageToShowLength: imageToShow?.length || 0,
-      fileName,
-      selectedFile: selectedFile?.name,
-      hasSelectedFile,
-      isCloudinaryUrl,
-      imageToShowStartsWithData: imageToShow?.startsWith('data:'),
-      renderCondition: !imageToShow && !hasSelectedFile ? 'no-file' : 'has-file'
-    });
-  }, [preview, value, imageToShow, fileName, selectedFile, hasSelectedFile, isCloudinaryUrl]);
+  const isCloudinaryUrl = imageToShow?.includes('cloudinary.com');
+
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('📁 File input changed');
     const file = e.target.files?.[0];
     if (file) {
-      console.log('📁 File selected:', file.name, file.type, file.size);
       handleFileSelect(file);
-    } else {
-      console.log('📁 No file selected');
     }
   };
 
@@ -99,12 +79,9 @@ export default function ImageUpload({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    
     if (disabled) return;
-
     const files = e.dataTransfer.files;
     const file = files[0];
-    
     if (file) {
       handleFileSelect(file);
     }
@@ -126,7 +103,6 @@ export default function ImageUpload({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Upload Area */}
       <div
         className={`
           relative border-2 border-dashed rounded-lg p-6 transition-colors
@@ -146,8 +122,8 @@ export default function ImageUpload({
           onChange={handleFileInputChange}
           className="hidden"
           disabled={disabled}
-        />        {!imageToShow && !hasSelectedFile ? (
-          // No file selected state
+        />
+        {!imageToShow && !hasSelectedFile ? (
           <div className="text-center">
             <FiUpload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <div className="text-sm text-gray-600">
@@ -166,49 +142,25 @@ export default function ImageUpload({
             )}
           </div>
         ) : (
-          // File selected or uploaded state
-          <div className="relative">            {/* Image Preview */}            <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
+          <div className="relative">
+            <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
               {imageToShow ? (
                 imageToShow.startsWith('data:') ? (
-                  // Use regular img tag for base64 data URLs (immediate preview)
                   <img
                     src={imageToShow}
                     alt="Preview"
                     className="w-full h-full object-contain"
-                    onError={(e) => {
-                      console.error('❌ IMG tag error:', e);
-                      console.error('❌ IMG src was:', imageToShow?.substring(0, 100));
-                      console.error('❌ IMG naturalWidth:', (e.target as HTMLImageElement).naturalWidth);
-                      console.error('❌ IMG naturalHeight:', (e.target as HTMLImageElement).naturalHeight);
-                    }}
-                    onLoad={(e) => {
-                      console.log('✅ IMG tag loaded successfully!');
-                      console.log('✅ IMG src:', imageToShow?.substring(0, 100));
-                      console.log('✅ IMG naturalWidth:', (e.target as HTMLImageElement).naturalWidth);
-                      console.log('✅ IMG naturalHeight:', (e.target as HTMLImageElement).naturalHeight);
-                      console.log('✅ IMG complete:', (e.target as HTMLImageElement).complete);
-                    }}
-                    style={{ backgroundColor: 'red' }} // Add red background to debug rendering
                   />
                 ) : (
-                  // Use Next.js Image for Cloudinary URLs
                   <Image
                     src={imageToShow}
                     alt="Preview"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain"
-                    onError={(e) => {
-                      console.error('❌ Next Image error:', e);
-                      console.error('❌ Next Image src was:', imageToShow);
-                    }}
-                    onLoad={() => {
-                      console.log('✅ Next Image loaded successfully!');
-                    }}
                   />
                 )
               ) : hasSelectedFile ? (
-                // Show placeholder when file is selected but not uploaded yet
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
                   <FiImage className="h-16 w-16 mb-3" />
                   <p className="text-sm font-medium">{fileName}</p>
@@ -217,19 +169,18 @@ export default function ImageUpload({
                   </p>
                 </div>
               ) : (
-                // Fallback
                 <div className="flex items-center justify-center h-full text-gray-400">
                   <FiImage className="h-12 w-12" />
                 </div>
               )}
             </div>
-              {/* File Info */}
             {fileName && (
               <div className="mt-2 flex items-center justify-between text-sm text-gray-600">
                 <div className="flex items-center">
                   <FiImage className="h-4 w-4 mr-1" />
                   <span className="truncate">{fileName}</span>
-                </div>                {hasSelectedFile && imageToShow?.startsWith('data:') && (
+                </div>
+                {hasSelectedFile && imageToShow?.startsWith('data:') && (
                   <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">
                     Ready to upload
                   </span>
@@ -241,8 +192,6 @@ export default function ImageUpload({
                 )}
               </div>
             )}
-
-            {/* Clear Button */}
             <button
               type="button"
               onClick={(e) => {
@@ -255,8 +204,6 @@ export default function ImageUpload({
             >
               <FiX className="h-4 w-4" />
             </button>
-
-            {/* Upload New Button */}
             <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
               <div className="opacity-0 hover:opacity-100 transition-opacity">
                 <button
@@ -274,7 +221,6 @@ export default function ImageUpload({
             </div>
           </div>
         )}
-
         {uploading && (
           <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
             <div className="flex flex-col items-center space-y-2">
