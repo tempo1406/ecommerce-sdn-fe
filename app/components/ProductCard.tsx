@@ -21,9 +21,8 @@ export default function ProductCard({ product }: ProductCardProps) {    // Get i
             style: "currency",
             currency: "USD",
         }).format(price);
-    };
-    return (
-        <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col group">
+    };    return (
+        <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group border border-gray-200 transform hover:-translate-y-1">
             {/* Product Image with hover effect */}
             <Link href={`/products/${product.id}`} className="relative">
         <div className="relative h-64 bg-gray-100 overflow-hidden">
@@ -34,46 +33,69 @@ export default function ProductCard({ product }: ProductCardProps) {    // Get i
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             priority={false}
-          />          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-          
-          {/* Product badges - Add random badges for visual interest */}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute bottom-0 left-0 w-full p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2 text-gray-800 text-sm font-medium">
+              Quick View
+            </div>
+          </div>
+            {/* Product badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-2">
-            {product.price >= 100 && (
-              <Badge text="Premium" color="primary" />
+            {product.category && (
+              <Badge text={product.category} color="primary" />
             )}
-            {Math.random() > 0.5 && (
-              <Badge text="Free Shipping" color="success" />
+            {product.stock !== undefined && product.stock === 0 && (
+              <Badge text="Out of Stock" color="danger" />
             )}
-            {Math.random() > 0.7 && (
-              <Badge text="Sale" color="danger" />
+            {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
+              <Badge text="Low Stock" color="warning" />
+            )}
+            {product.stock !== undefined && product.stock > 0 && product.stock >= 50 && (
+              <Badge text="High Stock" color="success" />
             )}
           </div>
         </div>
       </Link>
 
             {/* Product Info */}
-            <div className="p-4 flex-grow flex flex-col">
-                <Link href={`/products/${product.id}`}>
+            <div className="p-4 flex-grow flex flex-col">                <Link href={`/products/${product.id}`}>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2 group-hover:text-primary-700 transition-colors">
                         {product.name}
                     </h3>
-                </Link>
-                {/* Brief description preview */}
+                </Link>                {/* Brief description preview */}
                 {product.description && (
                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                         {product.description}
                     </p>
                 )}
-                <p className="text-xl font-bold text-primary-600 mt-auto">
+                
+                {/* Stock and Category Info */}                <div className="flex items-center justify-between mb-3 text-sm">
+                    {product.category && (
+                        <span className="text-gray-500 capitalize">{product.category}</span>
+                    )}
+                    {product.stock !== undefined && (
+                        <span className={`font-medium ${                            product.stock === 0 ? 'text-red-600' : 
+                            product.stock <= 5 ? 'text-orange-600' : 'text-green-600'
+                        }`}>
+                            {product.stock === 0 ? 'Out of Stock' : `${product.stock} in stock`}
+                        </span>
+                    )}
+                </div>
+                  <p className="text-xl font-bold text-primary-600 mt-auto">
                     {formatPrice(product.price)}
                 </p>
-            </div>
-            {/* View Details Link */}
+            </div>            {/* View Details Link */}
             <Link
                 href={`/products/${product.id}`}
-                className="mt-auto w-full bg-primary-600 text-white py-2 px-4 text-center font-medium hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
+                className="mt-auto w-full bg-primary-600 text-white py-2 px-4 text-center font-medium hover:bg-primary-700 transition-all duration-300 flex items-center justify-center gap-2 group-hover:bg-primary-500"
             >
-                View Details <FaExternalLinkAlt size={14} />
+                <span className="relative overflow-hidden inline-flex items-center justify-center">
+                  <span className="transition-transform duration-300 group-hover:-translate-y-full">View Details</span>
+                  <span className="absolute inset-0 flex items-center justify-center transform translate-y-full transition-transform duration-300 group-hover:translate-y-0">
+                    Explore <FaExternalLinkAlt size={14} className="ml-2" />
+                  </span>
+                </span>
             </Link>
         </div>
     );

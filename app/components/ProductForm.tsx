@@ -17,13 +17,14 @@ export default function ProductForm({ product, onSubmit, buttonText }: ProductFo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadImageFunction, setUploadImageFunction] = useState<(() => Promise<string | null>) | null>(null);
   const router = useRouter();
-  
-  // Default values for the form
+    // Default values for the form
   const defaultValues: Product = product || {
     name: '',
     description: '',
     price: 0,
     image: '',
+    category: '',
+    stock: 0,
   };
     // Initialize react-hook-form
   const {
@@ -84,23 +85,20 @@ export default function ProductForm({ product, onSubmit, buttonText }: ProductFo
       setIsSubmitting(false);
     }
   };
-
   return (
     <form 
       onSubmit={handleSubmit(handleFormSubmit)} 
-      className="bg-white rounded-lg shadow-md p-6"
+      className="bg-white rounded-lg shadow-md p-6 border"
     >
-      {/* Name Field */}
-      <div className="mb-4">
+      {/* Name Field */}      <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
           Product Name *
         </label>
         <input
           id="name"
           type="text"
-          className={`w-full px-3 py-2 border ${
-            errors.name ? 'border-red-500' : 'border-gray-300'
-          } rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500`}
+          className={`w-full px-3 py-2 border ${            errors.name ? 'border-red-500' : 'border-gray-300'
+          } rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500`}
           placeholder="Enter product name"
           {...register('name', { required: 'Product name is required' })}
         />
@@ -109,26 +107,22 @@ export default function ProductForm({ product, onSubmit, buttonText }: ProductFo
         )}
       </div>
 
-      {/* Description Field */}
-      <div className="mb-4">
+      {/* Description Field */}      <div className="mb-4">
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
           Description *
         </label>
         <textarea
           id="description"
           rows={4}
-          className={`w-full px-3 py-2 border ${
-            errors.description ? 'border-red-500' : 'border-gray-300'
-          } rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500`}
+          className={`w-full px-3 py-2 border ${            errors.description ? 'border-red-500' : 'border-gray-300'
+          } rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500`}
           placeholder="Enter product description"
           {...register('description', { required: 'Description is required' })}
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
         )}
-      </div>
-
-      {/* Price Field */}
+      </div>      {/* Price Field */}
       <div className="mb-4">
         <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
           Price ($) *
@@ -151,7 +145,56 @@ export default function ProductForm({ product, onSubmit, buttonText }: ProductFo
         {errors.price && (
           <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
         )}
-      </div>        {/* Image Upload Field */}
+      </div>
+
+      {/* Category Field */}
+      <div className="mb-4">
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+          Category *
+        </label>
+        <select
+          id="category"          className={`w-full px-3 py-2 border ${
+            errors.category ? 'border-red-500' : 'border-gray-300'
+          } rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500`}
+          {...register('category', { required: 'Category is required' })}
+        >
+          <option value="">Select a category</option>
+          <option value="electronics">Electronics</option>
+          <option value="clothing">Clothing</option>
+          <option value="books">Books</option>
+          <option value="home">Home & Garden</option>
+          <option value="sports">Sports & Outdoors</option>
+          <option value="beauty">Beauty & Personal Care</option>
+          <option value="toys">Toys & Games</option>
+          <option value="automotive">Automotive</option>
+          <option value="health">Health & Wellness</option>
+          <option value="food">Food & Beverages</option>
+        </select>        {errors.category && (
+          <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
+        )}
+      </div>
+
+      {/* Stock Field */}
+      <div className="mb-4">
+        <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
+          Stock Quantity *
+        </label>
+        <input
+          id="stock"
+          type="number"
+          min="0"
+          className={`w-full px-3 py-2 border ${            errors.stock ? 'border-red-500' : 'border-gray-300'
+          } rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500`}
+          placeholder="Enter stock quantity"
+          {...register('stock', { 
+            required: 'Stock quantity is required',
+            min: { value: 0, message: 'Stock must be 0 or greater' },
+            valueAsNumber: true,
+          })}
+        />        {errors.stock && (
+          <p className="mt-1 text-sm text-red-600">{errors.stock.message}</p>
+        )}
+      </div>{/* Image Upload Field */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Product Image (optional)

@@ -61,6 +61,19 @@ export interface Product {
   description: string;
   price: number;
   image?: string;
+  category?: string;
+  stock?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Filter interface for product filtering
+export interface ProductFilter {
+  categories: string[];
+  inStock?: boolean;
+  minStock?: number;
+  sortBy: 'name' | 'price' | 'stock' | 'newest';
+  sortOrder: 'asc' | 'desc';
 }
 
 // API functions for products

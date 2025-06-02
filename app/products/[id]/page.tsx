@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
-import MainLayout from '@/app/components/MainLayout';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { toast } from 'react-toastify';
 
@@ -61,53 +60,46 @@ export default function ProductDetail() {
       currency: 'USD',
     }).format(price);
   };
-
   if (loading) {
     return (
-      <MainLayout>
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <LoadingSpinner size="large" />
-        </div>
-      </MainLayout>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <LoadingSpinner size="large" />
+      </div>
     );
-  }
-  if (error || !product) {
+  }  if (error || !product) {
     return (
-      <MainLayout>
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-sm relative">
-          <h3 className="text-lg font-semibold">Error Loading Product</h3>
-          <p className="mt-2">{error || 'Product not found'}</p>
-          
-          {error && error.includes('Network error') && (
-            <div className="mt-3 p-3 bg-red-100 rounded-sm text-sm">
-              <p className="font-medium">Troubleshooting Tips:</p>
-              <ul className="list-disc list-inside mt-1">
-                <li>Ensure the backend server is running</li>
-                <li>Check network connection and CORS settings</li>
-              </ul>
-            </div>
-          )}
-          
-          <div className="mt-4 flex gap-3">
-            <Link href="/" className="text-primary-600 hover:text-primary-800 flex items-center gap-1 px-3 py-1.5 border border-primary-600 rounded-md">
-              <FaArrowLeft />
-              Back to products
-            </Link>
-            
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-3 py-1.5 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-            >
-              Try Again
-            </button>
+      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-sm relative">
+        <h3 className="text-lg font-semibold">Error Loading Product</h3>
+        <p className="mt-2">{error || 'Product not found'}</p>
+        
+        {error && error.includes('Network error') && (
+          <div className="mt-3 p-3 bg-red-100 rounded-sm text-sm">
+            <p className="font-medium">Troubleshooting Tips:</p>
+            <ul className="list-disc list-inside mt-1">
+              <li>Ensure the backend server is running</li>
+              <li>Check network connection and CORS settings</li>
+            </ul>
           </div>
+        )}
+        
+        <div className="mt-4 flex gap-3">
+          <Link href="/" className="text-primary-600 hover:text-primary-800 flex items-center gap-1 px-3 py-1.5 border border-primary-600 rounded-md">
+            <FaArrowLeft />
+            Back to products
+          </Link>
+          
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-3 py-1.5 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          >
+            Try Again
+          </button>
         </div>
-      </MainLayout>
+      </div>
     );
   }
-
   return (
-    <MainLayout>
+    <>
       {/* Back button */}
       <div className="mb-6">
         <Link href="/" className="text-primary-600 hover:text-primary-800 flex items-center gap-1">
@@ -117,7 +109,7 @@ export default function ProductDetail() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="md:flex">          {/* Product Image */}
+        <div className="md:flex">{/* Product Image */}
           <div className="md:w-1/2 relative h-[400px] bg-gray-100">
             {product.image && product.image.includes('cloudinary.com') ? (
               <Image
@@ -173,10 +165,9 @@ export default function ProductDetail() {
                 <FaTrash /> {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
             </div>
-          </div>
-        </div>
+          </div>        </div>
         
       </div>
-    </MainLayout>
+    </>
   );
 }

@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-    FaShoppingBag,
-    FaPlus,
-    FaHome
-} from "react-icons/fa";
+import { FaShoppingBag, FaPlus, FaHome, FaCog } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Banner from "./Banner";
 
 export default function MainLayout({
     children,
@@ -18,9 +15,9 @@ export default function MainLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const [, setApiStatus] = useState<
-        "available" | "unavailable" | "checking"
-    >("checking");
+    const [, setApiStatus] = useState<"available" | "unavailable" | "checking">(
+        "checking"
+    );
     // Check if the API is available
     useEffect(() => {
         const checkApiStatus = async () => {
@@ -56,10 +53,8 @@ export default function MainLayout({
 
         checkApiStatus();
     }, []);
-
     return (
         <div className="min-h-screen flex flex-col">
-            {/* Header */}
             <header className="bg-gradient-to-r from-primary-700 to-primary-900 shadow-md">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex justify-between items-center">
@@ -95,16 +90,15 @@ export default function MainLayout({
                     </div>
                 </div>
             </header>
-
+            <Banner />
             {/* Main content */}
             <main className="flex-grow container mx-auto px-4 py-8">
                 {children}
             </main>
-
             {/* Footer */}
-            <footer className="bg-gray-100 border-t border-gray-200">
+            <footer className="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                 <div className="container mx-auto px-4 py-6">
-                    <div className="text-center text-gray-600">
+                    <div className="text-center text-gray-600 dark:text-gray-400">
                         <p>
                             &copy; {new Date().getFullYear()} StyleHub. All
                             rights reserved.
@@ -112,7 +106,6 @@ export default function MainLayout({
                     </div>
                 </div>
             </footer>
-
             {/* Toast notifications container */}
             <ToastContainer
                 position="bottom-right"

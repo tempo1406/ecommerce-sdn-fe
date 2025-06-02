@@ -1,12 +1,13 @@
 'use client';
 
-import { ProductService, Product } from './services/api';
-import { useEffect, useState } from 'react';
+import { ProductService, Product, ProductFilter as IProductFilter } from './services/api';
+import { useEffect, useState, useCallback } from 'react';
 import ProductCard from './components/ProductCard';
-import MainLayout from './components/MainLayout';
 import LoadingSpinner from './components/LoadingSpinner';
 import SearchBar from './components/SearchBar';
-import { FaFilter, FaSortAmountDown } from 'react-icons/fa';
+import ProductFilter from './components/ProductFilter';
+import ActiveFilters from './components/ActiveFilters';
+import { FaFilter } from 'react-icons/fa';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -14,6 +15,14 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<IProductFilter>({
+    categories: [],
+    inStock: undefined,
+    minStock: undefined,
+    sortBy: 'name',
+    sortOrder: 'asc'
+  });
   const productsPerPage = 8;
 
   // Fetch products
@@ -39,11 +48,108 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  // Search and pagination logic
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter and sort products
+  const getFilteredAndSortedProducts = useCallback(() => {
+    if (!Array.isArray(products)) return [];
+
+    const filtered = products.filter(product => {
+      // Search filter
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Category filter
+      const matchesCategory = filters.categories.length === 0 || 
+        (product.category && filters.categories.includes(product.category));
+      
+      // Stock filter
+      let matchesStock = true;
+      if (filters.inStock === true) {
+        matchesStock = (product.stock || 0) > 0;
+      } else if (filters.inStock === false) {
+        matchesStock = (product.stock || 0) === 0;
+      }
+      
+      // Minimum stock filter
+      const matchesMinStock = filters.minStock === undefined || 
+        (product.stock || 0) >= filters.minStock;
+
+      return matchesSearch && matchesCategory && matchesStock && matchesMinStock;
+    });
+
+    // Sort products
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (filters.sortBy) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case 'price':
+          comparison = a.price - b.price;
+          break;
+        case 'stock':
+          comparison = (a.stock || 0) - (b.stock || 0);
+          break;
+        case 'newest':
+          comparison = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+          break;
+        default:
+          comparison = 0;
+      }
+      
+      return filters.sortOrder === 'desc' ? -comparison : comparison;
+    });
+
+    return filtered;
+  }, [products, searchQuery, filters]);
+
+  const filteredProducts = getFilteredAndSortedProducts();
+
+  // Handle filter changes
+  const handleFilterChange = useCallback((newFilters: IProductFilter) => {
+    setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, []);
+
+  // Handle removing individual filters
+  const handleRemoveFilter = useCallback((filterType: string, value?: string) => {
+    setFilters(prev => {
+      const newFilters = { ...prev };
+      
+      switch (filterType) {
+        case 'category':
+          if (value) {
+            newFilters.categories = prev.categories.filter(c => c !== value);
+          }
+          break;
+        case 'inStock':
+          newFilters.inStock = undefined;
+          break;
+        case 'minStock':
+          newFilters.minStock = undefined;
+          break;
+        case 'sort':
+          newFilters.sortBy = 'name';
+          newFilters.sortOrder = 'asc';
+          break;
+      }
+      
+      return newFilters;
+    });
+    setCurrentPage(1);
+  }, []);
+
+  // Handle clearing all filters
+  const handleClearAllFilters = useCallback(() => {
+    setFilters({
+      categories: [],
+      inStock: undefined,
+      minStock: undefined,
+      sortBy: 'name',
+      sortOrder: 'asc'
+    });
+    setCurrentPage(1);
+  }, []);
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -54,7 +160,7 @@ export default function Home() {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <MainLayout>
+    <>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Browse Our Collection</h1>
         <p className="text-gray-600">Discover the latest trends in fashion</p>
@@ -73,25 +179,25 @@ export default function Home() {
             />
           </div>
           
-          {/* Filter and Sort Buttons (for future enhancement) */}
+          {/* Filter Button */}
           <div className="flex gap-2">
-            <button 
-              className="flex items-center gap-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 transition-colors"
-              onClick={() => alert('Filter functionality will be implemented in future updates')}
-            >
-              <FaFilter size={14} />
-              <span>Filter</span>
-            </button>
-            <button 
-              className="flex items-center gap-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 transition-colors"
-              onClick={() => alert('Sort functionality will be implemented in future updates')}
-            >
-              <FaSortAmountDown size={14} />
-              <span>Sort</span>
-            </button>
+            <ProductFilter
+              products={products}
+              onFilterChange={handleFilterChange}
+              isVisible={showFilters}
+              onToggle={() => setShowFilters(!showFilters)}
+            />
           </div>
         </div>
       </div>
+
+      {/* Active Filters */}
+      <ActiveFilters
+        filters={filters}
+        onRemoveFilter={handleRemoveFilter}
+        onClearAll={handleClearAllFilters}
+        productCount={filteredProducts.length}
+      />
 
       {/* Products Grid */}
       {loading ? (
@@ -188,6 +294,6 @@ export default function Home() {
           )}
         </>
       )}
-    </MainLayout>
+    </>
   );
 }

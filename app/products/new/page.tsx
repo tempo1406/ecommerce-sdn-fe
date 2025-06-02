@@ -1,7 +1,6 @@
 'use client';
 
 import { Product, ProductService } from '@/app/services/api';
-import MainLayout from '@/app/components/MainLayout';
 import ProductForm from '@/app/components/ProductForm';
 
 export default function CreateProduct() {
@@ -16,17 +15,14 @@ export default function CreateProduct() {
       throw error; // Rethrow to let the form component handle the error
     }
   };
-
   return (
-    <MainLayout>
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Create New Product</h1>
-        
-        <ProductForm 
-          onSubmit={handleSubmit}
-          buttonText="Create Product"
-        />
-      </div>
-    </MainLayout>
+    <div className="max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Create New Product</h1>
+      
+      <ProductForm 
+        onSubmit={handleSubmit}
+        buttonText="Create Product"
+      />
+    </div>
   );
 }
