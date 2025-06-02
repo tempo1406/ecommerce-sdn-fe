@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaEdit, FaTrash, FaArrowLeft, FaUserCircle } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
 import MainLayout from '@/app/components/MainLayout';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { toast } from 'react-toastify';
@@ -22,11 +22,13 @@ export default function ProductDetail() {
       try {
         setLoading(true);
         const data = await ProductService.getById(id as string);
-        setProduct(data);
-      } catch (err: any) {
+        setProduct(data);      } catch (err: unknown) {
         console.error('Error fetching product:', err);
         // Show more descriptive error if available
-        setError(err.message || 'Failed to load product. Please try again later.');
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'Failed to load product. Please try again later.';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

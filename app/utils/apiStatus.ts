@@ -31,11 +31,10 @@ export async function checkApiAvailability(): Promise<{available: boolean, messa
       
       // 2. If that fails and URL ends with /api, try without it
       if (apiUrl.endsWith('/api')) {
-        try {
-          const baseUrl = apiUrl.slice(0, -4); // Remove /api
+        try {          const baseUrl = apiUrl.slice(0, -4); // Remove /api
           console.log('Trying without /api:', baseUrl);
           
-          const response = await axios.get(`${baseUrl}/products`, {
+          await axios.get(`${baseUrl}/products`, {
             timeout: 5000,
             withCredentials: false
           });
@@ -46,17 +45,16 @@ export async function checkApiAvailability(): Promise<{available: boolean, messa
             message: `API available at ${baseUrl} (without /api suffix). Consider updating your NEXT_PUBLIC_API_URL`
           };
         } catch (secondError) {
-          console.log('Second attempt also failed');
+          console.log('Second attempt also failed:', secondError);
           // Continue with more attempts
         }
       }
       
       // 3. Try with different port (3001 is common alternative)
-      try {
-        const altPort = apiUrl.replace(':3000', ':3001');
+      try {        const altPort = apiUrl.replace(':3000', ':3001');
         console.log('Trying alternative port:', altPort);
         
-        const response = await axios.get(`${altPort}/products`, {
+        await axios.get(`${altPort}/products`, {
           timeout: 5000,
           withCredentials: false
         });
@@ -66,7 +64,7 @@ export async function checkApiAvailability(): Promise<{available: boolean, messa
           message: `API available at ${altPort}. Consider updating your NEXT_PUBLIC_API_URL`
         };
       } catch (thirdError) {
-        console.log('Third attempt also failed');
+        console.log('Third attempt also failed:', thirdError);
         // Continue to error handling
         throw firstError; // Throw the original error for the error handler below
       }

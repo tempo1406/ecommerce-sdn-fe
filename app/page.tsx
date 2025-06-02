@@ -24,10 +24,12 @@ export default function Home() {
         const data = await ProductService.getAll();
         setProducts(data);
         setError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching products:', err);
         // Display a more descriptive error message if available
-        const errorMessage = err.message || 'Failed to load products. Please try again later.';
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'Failed to load products. Please try again later.';
         setError(errorMessage);
       } finally {
         setLoading(false);

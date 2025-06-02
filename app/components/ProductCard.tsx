@@ -3,7 +3,7 @@
 import { Product } from "@/app/services/api";
 import Image from "next/image";
 import Link from "next/link";
-import { FaExternalLinkAlt, FaCloudversify } from "react-icons/fa";
+import { FaExternalLinkAlt} from "react-icons/fa";
 import Badge from "./Badge";
 
 interface ProductCardProps {

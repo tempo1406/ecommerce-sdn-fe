@@ -98,11 +98,15 @@ export const ProductService = {
       if (!response.data || !response.data.id) {
         console.warn('API: Created product missing ID or data:', response.data);
       }
-      
-      return response.data;
-    } catch (error: any) {
+        return response.data;
+    } catch (error: unknown) {
       console.error('Error creating product:', error);
-      console.error('Error details:', error.response?.data || error.message);
+      // Type-safe error handling
+      if (error instanceof Error) {
+        console.error('Error details:', error.message);      } else if (typeof error === 'object' && error !== null && 'response' in error) {
+        const axiosError = error as { response?: { data?: unknown }; message?: string };
+        console.error('Error details:', axiosError.response?.data || axiosError.message);
+      }
       throw error;
     }
   },

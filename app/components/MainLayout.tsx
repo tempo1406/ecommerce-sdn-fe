@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation";
 import {
     FaShoppingBag,
     FaPlus,
-    FaHome,
-    FaExclamationTriangle,
+    FaHome
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +18,7 @@ export default function MainLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const [apiStatus, setApiStatus] = useState<
+    const [, setApiStatus] = useState<
         "available" | "unavailable" | "checking"
     >("checking");
     // Check if the API is available

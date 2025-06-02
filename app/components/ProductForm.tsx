@@ -61,12 +61,13 @@ export default function ProductForm({ product, onSubmit, buttonText }: ProductFo
       
       await onSubmit(formattedData);
       toast.success('Product saved successfully!');
-      router.push('/');
-    } catch (error: any) {
+      router.push('/');    } catch (error: unknown) {
       console.error('Error submitting product:', error);
       
       // Display a more specific error if available
-      const errorMessage = error.message || 'Failed to save product';
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Failed to save product';
       
       if (errorMessage.includes('Network error')) {
         toast.error(

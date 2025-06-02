@@ -19,10 +19,12 @@ export default function EditProduct() {
       try {
         setLoading(true);
         const data = await ProductService.getById(id as string);
-        setProduct(data);
-      } catch (err: any) {
+        setProduct(data);      } catch (err: unknown) {
         console.error('Error fetching product:', err);
-        setError(err.message || 'Failed to load product. Please try again later.');
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : 'Failed to load product. Please try again later.';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
