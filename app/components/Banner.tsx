@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaShoppingBag, FaTimes, FaStar, FaGift, FaEyeSlash } from 'react-icons/fa';
+import { FaShoppingBag, FaStar, FaGift } from 'react-icons/fa';
 import Image from 'next/image';
 
 interface BannerProps {
@@ -12,7 +12,6 @@ interface BannerProps {
 export default function Banner({ autoplay = true, interval = 5000 }: BannerProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showDismissOptions, setShowDismissOptions] = useState(false);
   
   // Initialize isVisible based on localStorage directly
   useEffect(() => {
@@ -60,24 +59,6 @@ export default function Banner({ autoplay = true, interval = 5000 }: BannerProps
     
     return () => clearInterval(slideTimer);
   }, [autoplay, isVisible, interval, bannerImages.length]);
-
-  // Function to handle permanently dismissing the banner
-  const handlePermanentDismiss = () => {
-    setIsVisible(false);
-    try {
-      const savedPreferences = localStorage.getItem('userPreferences');
-      const preferences = savedPreferences ? JSON.parse(savedPreferences) : {};
-      const updatedPreferences = { ...preferences, bannerDismissed: true };
-      localStorage.setItem('userPreferences', JSON.stringify(updatedPreferences));
-    } catch (error) {
-      console.error('Failed to save banner preferences:', error);
-    }
-  };
-
-  // Function to handle temporary dismissal
-  const handleTemporaryDismiss = () => {
-    setIsVisible(false);
-  };
 
   if (!isVisible) return null;
 
