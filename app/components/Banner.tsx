@@ -137,52 +137,7 @@ export default function Banner({ autoplay = true, interval = 5000 }: BannerProps
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
-      </div>
-
-      {/* Close Button */}
-      <div className="absolute top-2 right-2 z-30">
-        <button
-          onClick={() => setShowDismissOptions(!showDismissOptions)}
-          className="p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-          aria-label="Close banner options"
-        >
-          <FaTimes className="text-sm" />
-        </button>
-
-        {/* Dismiss Options Dropdown */}
-        {showDismissOptions && (
-          <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-40 min-w-[200px]">
-            <button
-              onClick={handleTemporaryDismiss}
-              className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 flex items-center transition-colors"
-            >
-              <FaEyeSlash className="mr-3 text-gray-500" />
-              <div>
-                <div className="font-medium">Hide for now</div>
-                <div className="text-xs text-gray-500">Will show again on refresh</div>
-              </div>
-            </button>
-            <button
-              onClick={handlePermanentDismiss}
-              className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 flex items-center border-t transition-colors"
-            >
-              <FaTimes className="mr-3 text-gray-500" />
-              <div>
-                <div className="font-medium">Do not show again</div>
-                <div className="text-xs text-gray-500">Permanently hide this banner</div>
-              </div>
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Click outside to close dropdown */}
-      {showDismissOptions && (
-        <div 
-          className="fixed inset-0 z-30" 
-          onClick={() => setShowDismissOptions(false)}
-        />
-      )}
+      </div> 
     </div>
   );
 }

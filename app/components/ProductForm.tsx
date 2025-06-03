@@ -100,7 +100,7 @@ export default function ProductForm({
     return (
         <form
             onSubmit={handleSubmit(handleFormSubmit)}
-            className="bg-white rounded-lg shadow-md p-6 border"
+            className="bg-white border border-gray-200 rounded-lg shadow-md p-6"
         >
             {/* Name Field */}{" "}
             <div className="mb-4">
